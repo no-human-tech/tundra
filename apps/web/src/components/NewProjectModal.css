@@ -1,0 +1,351 @@
+/**
+ * "New project" modal — layout + the radio/toggle/checkbox card patterns it
+ * introduces (methodology, modules, team). Feature-specific, so it lives next
+ * to the component rather than in the shared @tundra/ui component styles;
+ * everything here is still built on the shared `--tnd-*` tokens.
+ */
+
+.tnd-newproject__grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: var(--tnd-space-6);
+}
+.tnd-newproject__col {
+	min-width: 0;
+}
+.tnd-newproject__kicker {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	letter-spacing: var(--tnd-tracking-kicker);
+	text-transform: uppercase;
+	color: var(--tnd-color-text-faint);
+	margin: 0 0 var(--tnd-space-2);
+}
+.tnd-newproject__hint {
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text-muted);
+	margin: 0 0 var(--tnd-space-3);
+}
+.tnd-newproject__error {
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-danger);
+	margin: 0 0 var(--tnd-space-3);
+}
+.tnd-newproject__divider {
+	height: 1px;
+	background: var(--tnd-color-border-soft);
+	margin: 0 0 var(--tnd-space-4);
+}
+
+/* ---------------------------------------------------------------- Avatar */
+.tnd-newproject__avatarrow {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-4);
+	margin-bottom: var(--tnd-space-3);
+}
+.tnd-newproject__avatarpreview {
+	width: 60px;
+	height: 60px;
+	flex: none;
+	border-radius: var(--tnd-radius-xl);
+	background-size: cover;
+	background-position: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-lg);
+	font-weight: var(--tnd-weight-bold);
+	color: var(--tnd-color-avatar-on);
+}
+.tnd-newproject__avataractions {
+	flex: 1;
+	min-width: 0;
+}
+.tnd-newproject__uploadbtn {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	background: var(--tnd-color-surface);
+	border: var(--tnd-border-control) solid var(--tnd-color-border-strong);
+	border-radius: var(--tnd-radius-sm);
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+	cursor: pointer;
+	transition: border-color var(--tnd-motion-fast) var(--tnd-ease-standard);
+}
+.tnd-newproject__uploadbtn:hover {
+	border-color: var(--tnd-color-brand-bright);
+}
+.tnd-newproject__removeimg {
+	display: block;
+	appearance: none;
+	background: none;
+	border: none;
+	padding: 0;
+	margin-top: var(--tnd-space-2);
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-accent);
+	cursor: pointer;
+}
+.tnd-newproject__swatches {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--tnd-space-2);
+	margin-bottom: var(--tnd-space-4);
+}
+.tnd-newproject__swatch {
+	width: 26px;
+	height: 26px;
+	flex: none;
+	border-radius: var(--tnd-radius-sm);
+	border: none;
+	cursor: pointer;
+	outline: 2px solid transparent;
+	outline-offset: 2px;
+	transition: outline-color var(--tnd-motion-fast) var(--tnd-ease-standard);
+}
+
+/* ------------------------------------------------------------------ Fields */
+.tnd-newproject__field {
+	margin-bottom: var(--tnd-space-4);
+}
+.tnd-newproject__label {
+	display: block;
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+	margin-bottom: var(--tnd-space-2);
+}
+.tnd-newproject__input,
+.tnd-newproject__textarea {
+	width: 100%;
+	border: var(--tnd-border-control) solid var(--tnd-color-border-strong);
+	border-radius: var(--tnd-radius-sm);
+	padding: var(--tnd-space-3) var(--tnd-space-3);
+	font-family: inherit;
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text);
+	background: var(--tnd-color-surface);
+	outline: none;
+}
+.tnd-newproject__textarea {
+	resize: vertical;
+	line-height: var(--tnd-leading-base);
+}
+.tnd-newproject__input:focus,
+.tnd-newproject__textarea:focus,
+.tnd-newproject__repo:focus-within {
+	border-color: var(--tnd-color-brand-bright);
+}
+.tnd-newproject__repo {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	border: var(--tnd-border-control) solid var(--tnd-color-border-strong);
+	border-radius: var(--tnd-radius-sm);
+	padding: 0 var(--tnd-space-3);
+	background: var(--tnd-color-surface);
+	color: var(--tnd-color-text-muted);
+}
+.tnd-newproject__repoinput {
+	flex: 1;
+	border: none;
+	padding: var(--tnd-space-3) 0;
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text);
+	background: transparent;
+	outline: none;
+}
+
+/* --------------------------------------------------- Radio / toggle cards */
+.tnd-newproject__cardlist {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-2);
+	margin-bottom: var(--tnd-space-5);
+}
+.tnd-newproject__cardlist--scroll {
+	max-height: 220px;
+	overflow-y: auto;
+	padding-right: var(--tnd-space-1);
+}
+.tnd-newproject__card {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	border: var(--tnd-border-control) solid var(--tnd-color-border);
+	background: var(--tnd-color-surface);
+	border-radius: var(--tnd-radius-md);
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	cursor: pointer;
+	text-align: left;
+	font-family: inherit;
+	transition:
+		border-color var(--tnd-motion-fast) var(--tnd-ease-standard),
+		background-color var(--tnd-motion-fast) var(--tnd-ease-standard);
+}
+.tnd-newproject__card[data-checked] {
+	border-color: var(--tnd-color-brand-bright);
+	background: var(--tnd-color-brand-soft);
+}
+.tnd-newproject__card:disabled {
+	cursor: not-allowed;
+	opacity: 0.7;
+}
+.tnd-newproject__cardicon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	flex: none;
+	border-radius: var(--tnd-radius-sm);
+	background: var(--tnd-color-surface-sunken);
+	color: var(--tnd-color-text-muted);
+}
+.tnd-newproject__card[data-checked] .tnd-newproject__cardicon {
+	background: var(--tnd-color-brand);
+	color: var(--tnd-color-brand-on);
+}
+.tnd-newproject__cardmeta {
+	flex: 1;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+}
+.tnd-newproject__cardlabel {
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+}
+.tnd-newproject__carddesc {
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-muted);
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.tnd-newproject__radiodot {
+	width: 20px;
+	height: 20px;
+	flex: none;
+	border-radius: var(--tnd-radius-pill);
+	border: var(--tnd-border-control) solid var(--tnd-color-border-strong);
+	background: var(--tnd-color-surface);
+}
+.tnd-newproject__card[data-checked] .tnd-newproject__radiodot {
+	border-color: var(--tnd-color-brand);
+	background: var(--tnd-color-brand);
+	box-shadow: inset 0 0 0 3px var(--tnd-color-surface);
+}
+.tnd-newproject__switchdot {
+	width: 20px;
+	height: 20px;
+	flex: none;
+	border-radius: var(--tnd-radius-sm);
+	border: var(--tnd-border-control) solid var(--tnd-color-border-strong);
+	background: var(--tnd-color-surface);
+	color: var(--tnd-color-brand-on);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.tnd-newproject__card[data-checked] .tnd-newproject__switchdot {
+	border-color: var(--tnd-color-brand);
+	background: var(--tnd-color-brand);
+}
+
+/* -------------------------------------------------------------------- Team */
+.tnd-newproject__team {
+	padding: var(--tnd-space-2) 0 0;
+}
+.tnd-newproject__teamlist {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-2);
+}
+.tnd-newproject__teamrow {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	border: var(--tnd-border-control) solid var(--tnd-color-border);
+	background: var(--tnd-color-surface-sunken);
+	border-radius: var(--tnd-radius-md);
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+}
+.tnd-newproject__checkbox {
+	width: 21px;
+	height: 21px;
+	flex: none;
+	border-radius: var(--tnd-radius-xs);
+	border: var(--tnd-border-control) solid var(--tnd-color-border-strong);
+	background: var(--tnd-color-surface);
+	color: var(--tnd-color-brand-on);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	padding: 0;
+}
+.tnd-newproject__checkbox[data-checked] {
+	border-color: var(--tnd-color-brand);
+	background: var(--tnd-color-brand);
+}
+.tnd-newproject__memberavatar {
+	width: 30px;
+	height: 30px;
+	flex: none;
+	border-radius: var(--tnd-radius-pill);
+	background: var(--tnd-color-avatar-bg);
+	color: var(--tnd-color-avatar-on);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-bold);
+	transition: opacity var(--tnd-motion-fast) var(--tnd-ease-standard);
+}
+.tnd-newproject__membername {
+	flex: 1;
+	min-width: 0;
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	transition: opacity var(--tnd-motion-fast) var(--tnd-ease-standard);
+}
+.tnd-newproject__roleselect {
+	flex: none;
+	width: 172px;
+}
+.tnd-newproject__warning {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	background: var(--tnd-color-warning-soft);
+	border: var(--tnd-border-hairline) solid var(--tnd-color-warning);
+	border-radius: var(--tnd-radius-md);
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	margin-top: var(--tnd-space-3);
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-warning-on-soft);
+}
+.tnd-newproject__warning svg {
+	color: var(--tnd-color-accent);
+	flex: none;
+}
+
+@media (max-width: 680px) {
+	.tnd-newproject__grid {
+		grid-template-columns: 1fr;
+	}
+}

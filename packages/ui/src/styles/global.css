@@ -1,0 +1,198 @@
+/**
+ * Tundra global reset + base element styles.
+ *
+ * Imported once at the app root (after tokens.css). A light modern reset, the
+ * canonical :focus-visible ring, the skip-link affordance, mono for machine
+ * details, quiet scrollbars, and the prefers-reduced-motion guard. Roboto is the
+ * UI/body face; Roboto Mono is reserved for IDs, points, versions, timestamps,
+ * and kickers. The actual @fontsource font files are imported by apps/web — this
+ * package only consumes the CSS variables.
+ */
+
+/* Component styles ship with the global stylesheet so consumers get the full
+   design system from a single `@tundra/ui/styles.css` import. */
+@import "./components.css";
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: var(--tnd-font-sans);
+	font-size: var(--tnd-text-md);
+	line-height: var(--tnd-leading-base);
+	color: var(--tnd-color-text);
+	background-color: var(--tnd-color-bg);
+	-webkit-font-smoothing: antialiased;
+	text-rendering: optimizeLegibility;
+}
+
+::selection {
+	background: rgba(20, 184, 143, 0.22);
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+	margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	letter-spacing: var(--tnd-tracking-tight);
+	line-height: var(--tnd-leading-tight);
+}
+
+ul,
+ol {
+	margin: 0;
+	padding: 0;
+}
+
+img,
+picture,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	color: inherit;
+}
+
+a {
+	color: var(--tnd-color-brand);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/* Machine details — IDs, points, versions, timestamps — use the mono face. */
+code,
+kbd,
+samp,
+pre,
+.tnd-mono {
+	font-family: var(--tnd-font-mono);
+}
+
+code {
+	font-size: 0.9em;
+}
+
+/* Uppercase mono kicker (section eyebrows). */
+.tnd-kicker {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-semibold);
+	text-transform: uppercase;
+	letter-spacing: var(--tnd-tracking-kicker);
+	color: var(--tnd-color-brand);
+}
+
+/* Canonical focus ring — single source of truth. Never remove an outline
+   without a token-based replacement. */
+:focus-visible {
+	outline: none;
+	box-shadow: var(--tnd-focus-ring);
+	border-radius: var(--tnd-radius-sm);
+}
+
+/* Links and inline elements look better with an offset outline than a box
+   shadow; keep both consistent in color. */
+a:focus-visible {
+	outline: var(--tnd-focus-ring-width) solid var(--tnd-focus-ring-color);
+	outline-offset: var(--tnd-focus-ring-offset);
+	box-shadow: none;
+}
+
+/* Skip link: first focusable element, visible only on focus. */
+.tnd-skip-link {
+	position: absolute;
+	left: var(--tnd-space-2);
+	top: var(--tnd-space-2);
+	z-index: var(--tnd-z-toast);
+	padding: var(--tnd-space-2) var(--tnd-space-4);
+	background: var(--tnd-color-surface);
+	color: var(--tnd-color-text);
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border-strong);
+	border-radius: var(--tnd-radius-md);
+	box-shadow: var(--tnd-shadow-card);
+	transform: translateY(-150%);
+	transition: transform var(--tnd-motion-fast) var(--tnd-ease-standard);
+}
+
+.tnd-skip-link:focus-visible {
+	transform: translateY(0);
+	text-decoration: none;
+}
+
+/* Visually hidden but available to assistive tech. */
+.tnd-visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+main:focus {
+	outline: none;
+}
+
+/* Quiet, mint-tinted scrollbars (WebKit/Blink). */
+.tnd-scroll {
+	scrollbar-width: thin;
+	scrollbar-color: var(--tnd-color-scrollbar-thumb) transparent;
+}
+.tnd-scroll::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+.tnd-scroll::-webkit-scrollbar-thumb {
+	background: var(--tnd-color-scrollbar-thumb);
+	border-radius: 8px;
+	border: 3px solid transparent;
+	background-clip: content-box;
+}
+.tnd-scroll::-webkit-scrollbar-thumb:hover {
+	background: var(--tnd-color-scrollbar-thumb-hover);
+	background-clip: content-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+}

@@ -1,0 +1,151 @@
+# Tundra — Docker Swarm stack.
+#
+# Deploy with:
+#   docker stack deploy -c infra/swarm/docker-compose.yml tundra
+#
+# Swarm does not build images during stack deploy. Build and push the images
+# from infra/docker/* first, then pass their registry references via
+# TUNDRA_APP_IMAGE (one image for api/worker/web - ADR-0016).
+#
+# PostgreSQL is NOT managed by this stack. Provide a central Postgres instance
+# (self-hosted, managed, or on-premise) and supply its connection string via the
+# required DATABASE_URL environment variable before running `docker stack deploy`.
+# Redis is included in the stack as a local Swarm service (queue backend).
+
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+      update_config:
+        order: stop-first
+
+  api:
+    # Single app image for all roles (ADR-0016); api uses the image CMD.
+    image: ${TUNDRA_APP_IMAGE:?TUNDRA_APP_IMAGE must point to a pushed app image}
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      API_HOST: 0.0.0.0
+      API_PORT: 4000
+      GRAPHQL_PATH: ${GRAPHQL_PATH:-/graphql}
+      TUNDRA_DATA_SOURCE: db
+      CORS_ORIGIN: ${CORS_ORIGIN:?CORS_ORIGIN must be set to the public web origin}
+      # Injected directly from the deployment environment — never constructed here.
+      # Supports any valid Postgres connection string, e.g. with ?sslmode=require.
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL must point to the central Postgres database}
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+      GITHUB_CALLBACK_URL: ${GITHUB_CALLBACK_URL:-}
+      FRONTEND_URL: ${FRONTEND_URL:?FRONTEND_URL must be set to the public web origin}
+    ports:
+      - target: 4000
+        published: ${API_PUBLISHED_PORT:-4000}
+        protocol: tcp
+        mode: ingress
+    networks:
+      - frontend
+      - backend
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://127.0.0.1:4000/health'').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    deploy:
+      replicas: ${API_REPLICAS:-1}
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+      rollback_config:
+        parallelism: 1
+        order: stop-first
+
+  worker:
+    image: ${TUNDRA_APP_IMAGE:?TUNDRA_APP_IMAGE must point to a pushed app image}
+    command: ["pnpm", "--filter", "@tundra/worker", "start"]
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-5}
+      # Same central Postgres as the API — injected from the deployment environment.
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL must point to the central Postgres database}
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    networks:
+      - backend
+    deploy:
+      replicas: ${WORKER_REPLICAS:-1}
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+      update_config:
+        parallelism: 1
+        order: stop-first
+        failure_action: rollback
+
+  web:
+    image: ${TUNDRA_APP_IMAGE:?TUNDRA_APP_IMAGE must point to a pushed app image}
+    # Static SPA served by Node (apps/web/server.ts) on :8080 — ADR-0016.
+    command: ["pnpm", "--filter", "@tundra/web", "run", "serve"]
+    ports:
+      - target: 8080
+        published: ${WEB_PUBLISHED_PORT:-80}
+        protocol: tcp
+        mode: ingress
+    networks:
+      - frontend
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8080/ >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    deploy:
+      replicas: ${WEB_REPLICAS:-1}
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 10
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+      rollback_config:
+        parallelism: 1
+        order: stop-first
+
+networks:
+  frontend:
+    driver: overlay
+  backend:
+    driver: overlay
+    internal: true
+
+volumes:
+  redisdata:

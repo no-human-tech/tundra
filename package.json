@@ -1,0 +1,41 @@
+{
+	"name": "tundra",
+	"version": "0.0.0",
+	"private": true,
+	"description": "Tundra — source-available, modular project-management and collaboration platform.",
+	"license": "Elastic-2.0",
+	"type": "module",
+	"packageManager": "pnpm@9.15.4",
+	"engines": {
+		"node": ">=20.11.0",
+		"pnpm": ">=9.0.0"
+	},
+	"scripts": {
+		"dev": "turbo run dev",
+		"build": "turbo run build",
+		"lint": "eslint .",
+		"typecheck": "turbo run typecheck",
+		"test": "turbo run test",
+		"coverage": "turbo run coverage",
+		"e2e": "pnpm --filter @tundra/web e2e",
+		"i18n:check": "pnpm --filter @tundra/web run i18n:check",
+		"format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,css,md,yml,yaml}\"",
+		"format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,css,md,yml,yaml}\"",
+		"clean": "turbo run clean",
+		"ci": "pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build"
+	},
+	"devDependencies": {
+		"@eslint/js": "^9.17.0",
+		"@types/node": "^22.10.5",
+		"@vitest/coverage-v8": "^2.1.8",
+		"eslint": "^9.17.0",
+		"eslint-plugin-jsdoc": "^50.6.1",
+		"prettier": "^3.4.2",
+		"rimraf": "^6.0.1",
+		"tsx": "^4.19.2",
+		"turbo": "^2.3.4",
+		"typescript": "^5.7.3",
+		"typescript-eslint": "^8.19.1",
+		"vitest": "^2.1.8"
+	}
+}

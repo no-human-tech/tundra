@@ -1,0 +1,564 @@
+/**
+ * Page-level scaffolding for the PROJECT-scoped screens (Phase 2b).
+ *
+ * The design system (@tundra/ui) ships every COMPONENT style and `app.css` ships
+ * the global-screen scaffolding. This file adds ONLY the layout pieces the project
+ * screens need (overview grids, backlog rows, sprint/report cards, the docs
+ * "related" rail, comment post styling, settings layout). Everything is built
+ * on the same `--tnd-*` tokens — no new hard-coded colors.
+ *
+ * It is imported as a side effect from `ProjectScreen.tsx` (a shared project
+ * component) so the styles ship without touching `main.tsx` or `app.css`.
+ */
+
+/* ============================================================ Project section */
+/* The project <h1> lives in the context bar; sub-pages use an <h2> section head. */
+.tnd-projsection {
+	margin-bottom: var(--tnd-space-6);
+}
+.tnd-projsection__head {
+	display: flex;
+	align-items: baseline;
+	gap: var(--tnd-space-3);
+	margin-bottom: var(--tnd-space-3);
+	flex-wrap: wrap;
+}
+.tnd-projsection__title {
+	font-size: var(--tnd-text-lg);
+	font-weight: var(--tnd-weight-bold);
+	letter-spacing: var(--tnd-tracking-tight);
+	color: var(--tnd-color-text);
+}
+.tnd-projsection__hint {
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-projsection__actions {
+	margin-left: auto;
+	display: inline-flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+}
+
+/* The project sub-page heading row (kicker + section title). */
+.tnd-projhead {
+	margin-bottom: var(--tnd-space-5);
+}
+.tnd-projhead__title {
+	font-size: var(--tnd-text-xl);
+	font-weight: var(--tnd-weight-display);
+	letter-spacing: var(--tnd-tracking-tight);
+	color: var(--tnd-color-text);
+}
+.tnd-projhead__lead {
+	margin: var(--tnd-space-2) 0 0;
+	max-width: 70ch;
+	color: var(--tnd-color-text-muted);
+}
+
+/* ============================================================ Overview */
+.tnd-overview-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+	gap: var(--tnd-space-5);
+	align-items: start;
+}
+@media (max-width: 64rem) {
+	.tnd-overview-grid {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* The architecture metaphor: a calm stacked-layer visual (not a tech slide). */
+.tnd-arch {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-2);
+}
+.tnd-arch__layer {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	padding: var(--tnd-space-3) var(--tnd-space-4);
+	border-radius: var(--tnd-radius-md);
+	background: var(--tnd-color-mint-50);
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border);
+}
+.tnd-arch__layer[data-depth="1"] {
+	margin-left: var(--tnd-space-4);
+	background: var(--tnd-color-surface);
+}
+.tnd-arch__layer[data-depth="2"] {
+	margin-left: calc(var(--tnd-space-4) * 2);
+	background: var(--tnd-color-surface);
+}
+.tnd-arch__layer[data-depth="3"] {
+	margin-left: calc(var(--tnd-space-4) * 3);
+	background: var(--tnd-color-ext-soft);
+	border-color: transparent;
+}
+.tnd-arch__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	border-radius: var(--tnd-radius-md);
+	background: var(--tnd-color-brand-soft);
+	color: var(--tnd-color-brand);
+	flex: none;
+}
+.tnd-arch__layer[data-depth="3"] .tnd-arch__icon {
+	background: var(--tnd-color-ext-soft);
+	color: var(--tnd-color-ext-on-soft);
+}
+.tnd-arch__connector {
+	width: 2px;
+	height: var(--tnd-space-2);
+	margin-left: calc(var(--tnd-space-4) + 1rem);
+	background: var(--tnd-color-border-strong);
+}
+
+/* Member avatar stack on the overview. */
+.tnd-memberlist {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-1);
+}
+
+/* ============================================================ Backlog */
+.tnd-backlog {
+	display: flex;
+	flex-direction: column;
+}
+.tnd-backlog__group {
+	margin-bottom: var(--tnd-space-5);
+}
+.tnd-backlog__group-head {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	margin-bottom: var(--tnd-space-2);
+}
+.tnd-backlog__group-name {
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-bold);
+	color: var(--tnd-color-text);
+}
+.tnd-backlog__group-count {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-backlog__group-pts {
+	margin-left: auto;
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-backlog__list {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-2);
+}
+.tnd-backlog__row {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	width: 100%;
+	text-align: left;
+	padding: var(--tnd-space-3) var(--tnd-space-4);
+	background: var(--tnd-color-surface);
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border);
+	border-radius: var(--tnd-radius-md);
+	cursor: pointer;
+	transition:
+		border-color var(--tnd-motion-fast) var(--tnd-ease-standard),
+		box-shadow var(--tnd-motion-fast) var(--tnd-ease-standard);
+}
+.tnd-backlog__row:hover {
+	border-color: var(--tnd-color-brand-bright);
+	box-shadow: var(--tnd-shadow-card);
+}
+.tnd-backlog__row[data-blocked="true"] {
+	border-left: 3px solid var(--tnd-color-accent);
+}
+.tnd-backlog__ref {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text-subtle);
+	min-width: 5rem;
+}
+.tnd-backlog__title {
+	flex: 1;
+	min-width: 0;
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+}
+.tnd-backlog__labels {
+	display: inline-flex;
+	gap: var(--tnd-space-1);
+	flex-wrap: wrap;
+}
+.tnd-backlog__pts {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text-muted);
+	min-width: 3.25rem;
+	text-align: right;
+}
+
+/* shared inline label pill (board labels, backlog labels) */
+.tnd-label-pill {
+	display: inline-flex;
+	align-items: center;
+	padding: 1px var(--tnd-space-2);
+	border-radius: var(--tnd-radius-pill);
+	background: var(--tnd-color-surface-sunken);
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border);
+	font-size: 0.6875rem;
+	font-weight: var(--tnd-weight-medium);
+	color: var(--tnd-color-text-muted);
+}
+
+/* ============================================================ Board */
+.tnd-board {
+	display: flex;
+	gap: var(--tnd-space-4);
+	overflow-x: auto;
+	padding-bottom: var(--tnd-space-3);
+	align-items: flex-start;
+}
+.tnd-board-toolbar {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	flex-wrap: wrap;
+	margin-bottom: var(--tnd-space-4);
+}
+.tnd-board-toolbar__group {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--tnd-space-1);
+	padding: 3px;
+	background: var(--tnd-color-surface-sunken);
+	border-radius: var(--tnd-radius-md);
+}
+.tnd-segmented {
+	appearance: none;
+	border: none;
+	background: transparent;
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	border-radius: var(--tnd-radius-sm);
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-medium);
+	color: var(--tnd-color-text-muted);
+	cursor: pointer;
+}
+.tnd-segmented[aria-pressed="true"] {
+	background: var(--tnd-color-surface);
+	color: var(--tnd-color-text);
+	box-shadow: var(--tnd-shadow-sm);
+}
+
+/* A swimlane: a labelled band wrapping its own board row. */
+.tnd-swimlane {
+	margin-bottom: var(--tnd-space-5);
+}
+.tnd-swimlane__head {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	margin-bottom: var(--tnd-space-2);
+}
+.tnd-swimlane__name {
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-bold);
+	color: var(--tnd-color-text);
+}
+.tnd-swimlane__count {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+}
+
+/* labels row inside kanban cards uses the shared pill */
+.tnd-kanban-card__labels {
+	display: inline-flex;
+	gap: var(--tnd-space-1);
+	flex-wrap: wrap;
+}
+
+/* ============================================================ Task drawer */
+.tnd-tdrawer__panels {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--tnd-space-2);
+}
+.tnd-tdrawer__panel-pill {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--tnd-space-1);
+	padding: var(--tnd-space-1) var(--tnd-space-2);
+	border-radius: var(--tnd-radius-pill);
+	background: var(--tnd-color-ext-soft);
+	color: var(--tnd-color-ext-on-soft);
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-medium);
+}
+.tnd-tdrawer__module-note {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--tnd-space-1);
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-ext-on-soft);
+	font-weight: var(--tnd-weight-medium);
+	margin-bottom: var(--tnd-space-3);
+}
+.tnd-checklist {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-1);
+}
+.tnd-checklist__item {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--tnd-space-2);
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	border-radius: var(--tnd-radius-md);
+}
+.tnd-checklist__item[data-mine="true"] {
+	background: var(--tnd-color-brand-soft);
+}
+.tnd-checklist__main {
+	flex: 1;
+	min-width: 0;
+}
+.tnd-checklist__text {
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text);
+}
+.tnd-checklist__text[data-done="true"] {
+	text-decoration: line-through;
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-checklist__meta {
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-activity {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-3);
+}
+.tnd-activity__item {
+	display: flex;
+	gap: var(--tnd-space-3);
+}
+.tnd-activity__when {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+	min-width: 3rem;
+	flex: none;
+}
+
+/* ============================================================ Sprints */
+.tnd-sprint-card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-3);
+}
+.tnd-sprint-card__bar {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--tnd-space-3);
+}
+
+/* ============================================================ Docs */
+.tnd-doc-layout {
+	display: grid;
+	grid-template-columns: 15rem minmax(0, 1fr) 16rem;
+	gap: var(--tnd-space-5);
+	align-items: start;
+}
+@media (max-width: 75rem) {
+	.tnd-doc-layout {
+		grid-template-columns: 14rem minmax(0, 1fr);
+	}
+	.tnd-doc-layout__related {
+		grid-column: 1 / -1;
+	}
+}
+@media (max-width: 48rem) {
+	.tnd-doc-layout {
+		grid-template-columns: 1fr;
+	}
+}
+.tnd-doc-tree {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+.tnd-doc-tree__item {
+	display: block;
+	width: 100%;
+	text-align: left;
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	border-radius: var(--tnd-radius-sm);
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text-muted);
+}
+.tnd-doc-tree__item:hover {
+	background: var(--tnd-color-surface-sunken);
+}
+.tnd-doc-tree__item[data-depth="1"] {
+	padding-left: var(--tnd-space-5);
+}
+.tnd-doc-tree__item[aria-current="true"] {
+	background: var(--tnd-color-brand-soft);
+	color: var(--tnd-color-mint-600);
+	font-weight: var(--tnd-weight-semibold);
+}
+.tnd-doc-prose > * + * {
+	margin-top: var(--tnd-space-3);
+}
+.tnd-doc-prose h2 {
+	font-size: var(--tnd-text-lg);
+	font-weight: var(--tnd-weight-bold);
+	color: var(--tnd-color-text);
+	margin-top: var(--tnd-space-5);
+}
+.tnd-doc-prose p {
+	color: var(--tnd-color-text-muted);
+	line-height: 1.7;
+}
+.tnd-doc-prose ul {
+	padding-left: var(--tnd-space-5);
+	list-style: disc;
+	color: var(--tnd-color-text-muted);
+	line-height: 1.7;
+}
+
+/* ============================================================== Comments */
+/* Used by TaskDrawer's comment list (the former project Discussions screen's
+   thread-post styling; that standalone screen was withdrawn, see
+   The design spec §6, but its per-post layout still fits an inline comment). */
+.tnd-disc-thread__author {
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+}
+.tnd-disc-thread__when {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-disc-thread__text {
+	margin: var(--tnd-space-1) 0 0;
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text-muted);
+	line-height: 1.6;
+}
+
+/* ============================================================ Reports */
+.tnd-report-card {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-3);
+}
+.tnd-report-card__metric {
+	font-size: var(--tnd-text-2xl);
+	font-weight: var(--tnd-weight-display);
+	letter-spacing: var(--tnd-tracking-tighter);
+	color: var(--tnd-color-text);
+	line-height: 1;
+}
+/* A tiny SVG/CSS bar chart — lightweight, decorative. */
+.tnd-minibars {
+	display: flex;
+	align-items: flex-end;
+	gap: var(--tnd-space-2);
+	height: 4rem;
+}
+.tnd-minibars__bar {
+	flex: 1;
+	min-width: 6px;
+	border-radius: var(--tnd-radius-sm) var(--tnd-radius-sm) 0 0;
+	background: var(--tnd-color-brand-bright);
+}
+.tnd-minibars__bar[data-accent="true"] {
+	background: var(--tnd-color-accent);
+}
+.tnd-spark {
+	display: block;
+	width: 100%;
+	height: 4rem;
+}
+
+/* ============================================================ Settings */
+.tnd-settings-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+	gap: var(--tnd-space-5);
+	align-items: start;
+}
+@media (max-width: 64rem) {
+	.tnd-settings-grid {
+		grid-template-columns: 1fr;
+	}
+}
+/* Sticky unsaved-changes action bar. */
+.tnd-savebar {
+	position: sticky;
+	bottom: var(--tnd-space-4);
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	padding: var(--tnd-space-3) var(--tnd-space-4);
+	background: var(--tnd-color-surface);
+	border: var(--tnd-border-control) solid var(--tnd-color-accent);
+	border-radius: var(--tnd-radius-lg);
+	box-shadow: var(--tnd-shadow-hover);
+	margin-top: var(--tnd-space-5);
+}
+.tnd-savebar__note {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-medium);
+	color: var(--tnd-color-accent-ink);
+}
+.tnd-savebar__actions {
+	margin-left: auto;
+	display: inline-flex;
+	gap: var(--tnd-space-2);
+}
+
+/* A permission grid row inside settings. */
+.tnd-perm-row {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	padding: var(--tnd-space-3) 0;
+	border-bottom: var(--tnd-border-hairline) solid var(--tnd-color-border);
+}
+.tnd-perm-row:last-child {
+	border-bottom: none;
+}
+.tnd-perm-row__main {
+	flex: 1;
+	min-width: 0;
+}

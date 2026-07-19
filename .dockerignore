@@ -1,0 +1,37 @@
+# Keep the Docker build context small and, critically, never copy the host's
+# node_modules into the image — the build stages install their own. Copying the
+# host tree (Windows symlinks + host-specific pnpm store) over a container's
+# node_modules breaks module resolution (MODULE_NOT_FOUND).
+
+# Dependencies & build output
+**/node_modules
+**/dist
+**/build
+**/.turbo
+**/coverage
+
+# Local env & secrets (compose/CI inject these at runtime; never bake into images)
+.env
+.env.*
+!.env.example
+
+# VCS, CI, tooling, editor
+.git
+.gitignore
+.github
+.vscode
+.idea
+.claude
+.codex
+
+# Playwright / test artifacts
+**/test-results
+**/playwright-report
+**/.playwright
+.playwright-mcp
+
+# Docs (not needed to build the apps; includes the large vendored design comp)
+docs
+
+# Logs
+**/*.log

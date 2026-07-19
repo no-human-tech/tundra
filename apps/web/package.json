@@ -1,0 +1,42 @@
+{
+	"name": "@tundra/web",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview",
+		"serve": "tsx server.ts",
+		"typecheck": "tsc --noEmit",
+		"i18n:check": "node scripts/check-locales.mjs",
+		"test": "vitest run --passWithNoTests",
+		"e2e": "playwright test",
+		"e2e:install": "playwright install chromium",
+		"analyze": "pnpm run build && node scripts/bundle-report.mjs",
+		"clean": "rimraf dist .turbo test-results playwright-report"
+	},
+	"dependencies": {
+		"@fontsource/roboto": "^5.1.0",
+		"@fontsource/roboto-mono": "^5.1.0",
+		"@tundra/domain": "workspace:*",
+		"@tundra/ui": "workspace:*",
+		"i18next": "^24.2.0",
+		"i18next-browser-languagedetector": "^8.0.2",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"react-i18next": "^15.4.0",
+		"react-router-dom": "^6.28.1"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.49.1",
+		"@testing-library/jest-dom": "^6.6.3",
+		"@testing-library/react": "^16.1.0",
+		"@types/react": "^18.3.18",
+		"@types/react-dom": "^18.3.5",
+		"@vitejs/plugin-react": "^4.3.4",
+		"jsdom": "^25.0.1",
+		"vite": "^6.0.7",
+		"vitest": "^2.1.8"
+	}
+}

@@ -1,0 +1,252 @@
+/**
+ * Tundra design tokens — the single source of truth for the design system.
+ *
+ * Values follow `docs/design/tundra-design-system.md`, derived from the
+ * canonical Tundra design. All tokens are CSS
+ * custom properties prefixed `--tnd-`. Components reference SEMANTIC ALIAS tokens
+ * (e.g. --tnd-color-brand, --tnd-color-text) and never raw scale values. The
+ * dark theme ships as exactly that alias-only override, below, under
+ * `:root[data-theme="dark"]` — zero component changes needed.
+ *
+ * Brand intent: mint is the dominant identity color; orange is a restrained
+ * accent for primary actions, the live timer, notification dot, blocked/urgent
+ * flags, and automation/extension "energy".
+ *
+ * Contrast intent (WCAG):
+ *  - --tnd-color-text (#16302b) on surface/bg: AAA body.
+ *  - --tnd-color-text-muted (#4b5a61) on surface: AA+ normal text.
+ *  - --tnd-color-text-subtle (#7e8c92) on surface: AA for >= subtext.
+ *  - status *-on-soft colors are >= 4.5:1 on their *-soft chip backgrounds.
+ *  - --tnd-color-accent-on (#fff) on orange is AA-LARGE only: use it solely for
+ *    BOLD >= 14pt text. For small orange text on light use --tnd-color-accent-ink.
+ *  - mint-400 is the bright fill / focus color; for orange-free brand TEXT on
+ *    light use mint-500/600/700.
+ */
+
+:root {
+	/* ----- Mint scale (dominant) ----- */
+	--tnd-color-mint-50: #f1f8f5;
+	--tnd-color-mint-100: #e6f8f1; /* soft mint surface */
+	--tnd-color-mint-150: #eaf6f1; /* mint-tinted sidebar rail */
+	--tnd-color-mint-200: #cff4e6;
+	--tnd-color-mint-300: #7ceac4;
+	--tnd-color-mint-400: #14b88f; /* mint-bright: primary fill, healthy / done */
+	--tnd-color-mint-500: #0f766e; /* deep mint: brand, chrome */
+	--tnd-color-mint-600: #0b5c50; /* deep mint hover / pressed */
+	--tnd-color-mint-700: #16302b; /* darkest mint-slate (also text-strong) */
+
+	/* ----- Orange (accent only) ----- */
+	--tnd-color-orange-100: #fff1e7; /* soft accent surface */
+	--tnd-color-orange-300: #ffb27a;
+	--tnd-color-orange-400: #ff8a3d; /* accent */
+	--tnd-color-orange-500: #f2722b; /* accent strong (hover / pressed) */
+	--tnd-color-orange-700: #9a3f12; /* accent ink: orange TEXT on light (AA) */
+
+	/* ----- Neutrals (cool, mint-tinted) ----- */
+	--tnd-color-bg: #f4f7f6;
+	--tnd-color-surface: #ffffff;
+	--tnd-color-surface-2: #fafcfb; /* raised-but-quiet surface, between surface and sunken */
+	--tnd-color-surface-sunken: #f2f6f4;
+	--tnd-color-surface-raised: #ffffff; /* menus / popovers (with shadow) */
+	--tnd-color-hover: #f1f8f5; /* row/item hover wash */
+	--tnd-color-text: #16302b; /* AAA on surface */
+	--tnd-color-text-muted: #4b5a61; /* AA+ */
+	--tnd-color-text-subtle: #7e8c92; /* AA for >= subtext */
+	--tnd-color-text-faint: #9aa8ae; /* placeholders, disabled meta */
+	--tnd-color-text-on-brand: #ffffff;
+	--tnd-color-border: #e4ecea;
+	--tnd-color-border-soft: #eef3f1; /* quieter than border, for nested dividers */
+	--tnd-color-border-faint: #f2f6f4; /* quietest divider (e.g. table row rules) */
+	--tnd-color-border-strong: #d4e2de;
+	--tnd-color-border-warm: #e8e3da; /* auth-card hairlines */
+	--tnd-color-overlay: rgba(16, 48, 43, 0.42);
+
+	/* ----- Skeleton shimmer + scrollbar (theme-aware) ----- */
+	--tnd-color-skeleton-a: #eaf1ef;
+	--tnd-color-skeleton-b: #f5faf8;
+	--tnd-color-scrollbar-thumb: #d4e2de;
+	--tnd-color-scrollbar-thumb-hover: #b9cec8;
+
+	/* ----- Brand / accent semantic aliases ----- */
+	--tnd-color-brand: var(--tnd-color-mint-500);
+	--tnd-color-brand-bright: var(--tnd-color-mint-400);
+	--tnd-color-brand-strong: var(--tnd-color-mint-600);
+	--tnd-color-brand-soft: var(--tnd-color-mint-100);
+	--tnd-color-brand-on: #ffffff;
+	--tnd-color-accent: var(--tnd-color-orange-400);
+	--tnd-color-accent-strong: var(--tnd-color-orange-500);
+	--tnd-color-accent-soft: var(--tnd-color-orange-100);
+	--tnd-color-accent-ink: var(--tnd-color-orange-700); /* small orange text on light */
+	--tnd-color-accent-on: #ffffff; /* only on BOLD >= 14pt text (AA large) */
+
+	/* Avatar identity color — the design spec §2.3: carries identity meaning, not
+	 * chrome, so it must render identically in both themes. Defined once here
+	 * (not re-declared under the dark override) rather than aliased to
+	 * --tnd-color-brand, which DOES change between themes. */
+	--tnd-color-avatar-bg: #0f766e;
+	--tnd-color-avatar-on: #ffffff;
+
+	/* ----- Semantic status (base / soft bg / on-soft text, AA on the soft bg) ----- */
+	--tnd-color-success: #14b88f;
+	--tnd-color-success-soft: #e6f8f1;
+	--tnd-color-success-on-soft: #0b5c50;
+	--tnd-color-warning: #c0790c;
+	--tnd-color-warning-soft: #fcf1dc;
+	--tnd-color-warning-on-soft: #7a4a21;
+	--tnd-color-danger: #d8453b;
+	--tnd-color-danger-soft: #fdeae8;
+	--tnd-color-danger-on-soft: #9a2a23;
+	--tnd-color-info: #1d7ac4;
+	--tnd-color-info-soft: #e7f1fb;
+	--tnd-color-info-on-soft: #185e97;
+
+	/* ----- Extension / automation "extensibility energy" (purple) ----- */
+	--tnd-color-ext: #8c5bd0;
+	--tnd-color-ext-soft: #f2ecfb;
+	--tnd-color-ext-on-soft: #5b3a91;
+
+	/* ----- Spacing (4px base, t-shirt indexed) ----- */
+	--tnd-space-0: 0;
+	--tnd-space-1: 0.25rem; /* 4 */
+	--tnd-space-2: 0.5rem; /* 8 */
+	--tnd-space-3: 0.75rem; /* 12 */
+	--tnd-space-4: 1rem; /* 16 */
+	--tnd-space-5: 1.5rem; /* 24 */
+	--tnd-space-6: 2rem; /* 32 */
+	--tnd-space-7: 3rem; /* 48 */
+	--tnd-space-8: 4rem; /* 64 */
+
+	/* ----- Radii ----- */
+	--tnd-radius-xs: 2px;
+	--tnd-radius-sm: 6px;
+	--tnd-radius-md: 10px; /* default control radius */
+	--tnd-radius-lg: 13px; /* card radius */
+	--tnd-radius-xl: 16px;
+	--tnd-radius-2xl: 18px;
+	--tnd-radius-pill: 999px;
+
+	/* ----- Borders ----- */
+	--tnd-border-hairline: 1px;
+	--tnd-border-control: 1.5px;
+
+	/* ----- Typography ----- */
+	/*
+   * i18n font strategy: Roboto leads for Latin text, then a broad CJK-capable
+   * fallback stack so Chinese / Japanese / Korean glyphs render from the user's
+   * OS fonts when Roboto lacks them. We deliberately do NOT bundle CJK webfonts —
+   * a full CJK family is multiple megabytes per weight, which would dwarf the app
+   * bundle; relying on the platform CJK fonts keeps the download small while still
+   * rendering every script. The list covers macOS/iOS (Hiragino, Apple SD Gothic
+   * Neo), Windows (Yu Gothic, Meiryo, Microsoft YaHei, Malgun Gothic), and Linux
+   * (Noto Sans CJK SC/KR/JP) across SC/JP/KR. --tnd-font-mono carries body text
+   * (refs, kbd, slot ids), so it gets the same CJK tail after the monospace faces.
+   */
+	--tnd-font-sans:
+		"Roboto", system-ui, -apple-system, "Segoe UI", "Noto Sans", "Noto Sans CJK SC",
+		"Noto Sans CJK KR", "Noto Sans CJK JP", "Hiragino Sans", "Hiragino Kaku Gothic ProN",
+		"Yu Gothic", "Meiryo", "Microsoft YaHei", "Malgun Gothic", "Apple SD Gothic Neo", Helvetica,
+		Arial, sans-serif;
+	--tnd-font-mono:
+		"Roboto Mono", ui-monospace, "SFMono-Regular", "Menlo", "Consolas", "Noto Sans CJK SC",
+		"Noto Sans CJK KR", "Noto Sans CJK JP", "Hiragino Sans", "Yu Gothic", "Meiryo",
+		"Microsoft YaHei", "Malgun Gothic", "Apple SD Gothic Neo", monospace;
+
+	--tnd-text-xs: 0.75rem; /* 12 — meta, badges */
+	--tnd-text-sm: 0.875rem; /* 14 — body small, controls */
+	--tnd-text-md: 1rem; /* 16 — base body */
+	--tnd-text-lg: 1.125rem; /* 18 — card titles */
+	--tnd-text-xl: 1.375rem; /* 22 — section headings */
+	--tnd-text-2xl: 1.75rem; /* 28 — page titles */
+	--tnd-text-3xl: 1.875rem; /* 30 — display */
+
+	--tnd-leading-tight: 1.25;
+	--tnd-leading-base: 1.5;
+	--tnd-weight-regular: 400;
+	--tnd-weight-medium: 500;
+	--tnd-weight-semibold: 600;
+	--tnd-weight-bold: 700;
+	--tnd-weight-display: 800;
+
+	/* Tight tracking for headings; mono kicker tracking. */
+	--tnd-tracking-tight: -0.4px;
+	--tnd-tracking-tighter: -1px;
+	--tnd-tracking-kicker: 0.12em;
+
+	/* ----- Shadow (quiet; appear on hover / elevation) ----- */
+	--tnd-shadow-sm: 0 1px 2px rgba(16, 48, 43, 0.04);
+	--tnd-shadow-card: 0 2px 10px rgba(16, 48, 43, 0.08);
+	--tnd-shadow-hover: 0 18px 44px rgba(16, 48, 43, 0.1);
+	--tnd-shadow-modal: 0 30px 80px rgba(16, 48, 43, 0.3);
+	/* legacy aliases (kept for back-compat with earlier components) */
+	--tnd-shadow-md: var(--tnd-shadow-card);
+	--tnd-shadow-lg: var(--tnd-shadow-hover);
+
+	/* ----- Focus ring (single source of truth) ----- */
+	--tnd-focus-ring-color: var(--tnd-color-mint-400);
+	--tnd-focus-ring-width: 2px;
+	--tnd-focus-ring-offset: 2px;
+	--tnd-focus-ring:
+		0 0 0 var(--tnd-focus-ring-width) var(--tnd-color-surface),
+		0 0 0 calc(var(--tnd-focus-ring-width) + 2px) var(--tnd-focus-ring-color);
+
+	/* ----- Motion ----- */
+	--tnd-motion-fast: 150ms;
+	--tnd-motion-base: 200ms;
+	--tnd-ease-standard: cubic-bezier(0.2, 0.8, 0.3, 1);
+
+	/* ----- Z-index scale ----- */
+	--tnd-z-base: 0;
+	--tnd-z-sticky: 100; /* project sub-nav, sticky headers */
+	--tnd-z-drawer: 300; /* task drawer */
+	--tnd-z-overlay: 400; /* scrim */
+	--tnd-z-modal: 500;
+	--tnd-z-toast: 600;
+}
+
+/**
+ * Dark theme — the design spec §2.1. Overrides ONLY the semantic aliases a
+ * component would read (never the raw mint/orange scale), so every component
+ * that already themes off `--tnd-color-*` aliases picks this up for free.
+ *
+ * Semantic chips/status colors (success/warning/danger/info/ext), the orange
+ * accent scale, and avatar colors are intentionally UNCHANGED here — the design spec
+ * §2.3 specifies they carry meaning and must stay constant across themes.
+ *
+ * A few tokens below aren't in the the design spec table (it only documents
+ * the app's core surface/text/brand roles) and are filled in with values
+ * consistent with the rest of the dark palette: --tnd-color-surface-sunken,
+ * --tnd-color-brand-strong (pressed/hover), --tnd-color-brand-on /
+ * --tnd-color-text-on-brand (white-on-brand fails contrast against the
+ * lighter dark-mode brand fill, so both switch to a dark ink), and
+ * --tnd-color-overlay (deepened so scrims still read against a dark page).
+ */
+:root[data-theme="dark"] {
+	--tnd-color-bg: #0a1714;
+	--tnd-color-surface: #112a24;
+	--tnd-color-surface-2: #15332c;
+	--tnd-color-surface-sunken: #0a1714; /* not in the design spec's table; falls back to bg */
+	--tnd-color-surface-raised: #112a24;
+	--tnd-color-hover: rgba(255, 255, 255, 0.05);
+	--tnd-color-text: #eaf6f1;
+	--tnd-color-text-muted: #a8c2ba;
+	--tnd-color-text-subtle: #8fa8a0;
+	--tnd-color-text-faint: #74897f;
+	--tnd-color-text-on-brand: #0a1714; /* contrast fill-in, see file header */
+	--tnd-color-border: rgba(255, 255, 255, 0.1);
+	--tnd-color-border-soft: rgba(255, 255, 255, 0.07);
+	--tnd-color-border-faint: rgba(255, 255, 255, 0.05);
+	--tnd-color-border-strong: rgba(255, 255, 255, 0.18);
+	--tnd-color-border-warm: rgba(255, 255, 255, 0.12);
+	--tnd-color-overlay: rgba(0, 0, 0, 0.6);
+
+	--tnd-color-brand: #2fbfa3;
+	--tnd-color-brand-bright: #2fbfa3;
+	--tnd-color-brand-strong: #299f88; /* contrast fill-in, see file header */
+	--tnd-color-brand-soft: rgba(124, 234, 196, 0.1);
+	--tnd-color-brand-on: #0a1714; /* contrast fill-in, see file header */
+
+	--tnd-color-skeleton-a: rgba(255, 255, 255, 0.05);
+	--tnd-color-skeleton-b: rgba(255, 255, 255, 0.09);
+	--tnd-color-scrollbar-thumb: rgba(255, 255, 255, 0.16);
+	--tnd-color-scrollbar-thumb-hover: rgba(255, 255, 255, 0.28);
+}

@@ -1,0 +1,155 @@
+# Tundra — local development stack (architect ADR-0007).
+#
+# Default behaviour (no profile):
+#   docker compose -f infra/compose/docker-compose.yml up -d
+# starts ONLY the backing datastores (Postgres + Redis). Local development runs
+# the apps on the host with `corepack pnpm dev`, which talks to these containers
+# via the URLs in the repo-root `.env` (DATABASE_URL / REDIS_URL).
+#
+# The optional `api`, `worker`, and `web` services are guarded behind the `apps`
+# profile and only build/start when you opt in:
+#   docker compose -f infra/compose/docker-compose.yml --profile apps up -d --build
+# They exist for future containerized deploys and parity testing — local dev does
+# NOT require them.
+#
+# Configuration: values come from the repo-root `.env` (copy it from
+# `.env.example` first). Each `${VAR}` below carries the same default as
+# `.env.example`, so the datastores still come up with a missing/partial `.env`.
+
+name: tundra
+
+services:
+  # ----- PostgreSQL: primary datastore (packages/db / Drizzle) -----
+  postgres:
+    image: postgres:16-alpine
+    container_name: tundra-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-tundra}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tundra}
+      POSTGRES_DB: ${POSTGRES_DB:-tundra}
+    ports:
+      # Host port is configurable; container always listens on 5432.
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # pg_isready returns success once the server accepts connections.
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-tundra} -d ${POSTGRES_DB:-tundra}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # ----- Redis: queues (BullMQ) + cache -----
+  redis:
+    image: redis:7-alpine
+    container_name: tundra-redis
+    restart: unless-stopped
+    # Persist with append-only file so queued jobs survive a restart.
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  # ----- OPTIONAL app services (profile: apps) -----
+  # All three roles run from the single infra/docker/Dockerfile.app image
+  # (ADR-0016) and differ only by `command`. When using this profile the apps
+  # connect to Postgres/Redis over the compose network, so the *_HOST values
+  # are overridden to the service names here.
+  api:
+    profiles: ["apps"]
+    build:
+      # Build context is the repo root so the whole workspace + lockfile is visible.
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.app
+    container_name: tundra-api
+    restart: unless-stopped
+    environment:
+      # Local dev/parity stack: default to development so the API runs migrations
+      # and idempotent dev seeding on startup (override NODE_ENV to disable seed).
+      NODE_ENV: ${NODE_ENV:-development}
+      API_HOST: 0.0.0.0
+      API_PORT: ${API_PORT:-4000}
+      GRAPHQL_PATH: ${GRAPHQL_PATH:-/graphql}
+      # Containerized API reads from Postgres (packages/db), not the in-memory mock.
+      TUNDRA_DATA_SOURCE: db
+      # Both hostnames are accepted: `localhost` for the traditional local
+      # workflow and `127.0.0.1` for Playwright e2e (docs/development/e2e-testing.md
+      # recommends 127.0.0.1 on Windows, where `localhost` can resolve to the
+      # IPv6 ::1 loopback and hit an unrelated local process).
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174}
+      # In-network hostnames replace localhost from .env.
+      DATABASE_URL: postgres://${POSTGRES_USER:-tundra}:${POSTGRES_PASSWORD:-tundra}@postgres:5432/${POSTGRES_DB:-tundra}
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "${API_PORT:-4000}:4000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker:
+    profiles: ["apps"]
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.app
+    command: ["pnpm", "--filter", "@tundra/worker", "start"]
+    container_name: tundra-worker
+    restart: unless-stopped
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-5}
+      DATABASE_URL: postgres://${POSTGRES_USER:-tundra}:${POSTGRES_PASSWORD:-tundra}@postgres:5432/${POSTGRES_DB:-tundra}
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  web:
+    profiles: ["apps"]
+    build:
+      context: ../..
+      dockerfile: infra/docker/Dockerfile.app
+      args:
+        # Vite inlines VITE_* at build time, so the API URL is a build arg.
+        # 127.0.0.1 (not localhost) so the session cookie's `SameSite=Lax`
+        # still applies when the web app itself is reached via 127.0.0.1 (see
+        # the CORS_ORIGIN comment above) — `localhost` and `127.0.0.1` are
+        # different sites for SameSite purposes even though both resolve
+        # locally, so a mismatched pair would silently drop the cookie.
+        VITE_API_URL: ${VITE_API_URL:-http://127.0.0.1:4000/graphql}
+        # Empty by default: LoginPage.tsx only shows a provider tile when its
+        # client id is non-empty. See
+        # infra/compose/docker-compose.visual-reference.yml for the override
+        # that fills these in (dummy values) for the login-visual.spec.ts
+        # mockup screenshot comparison — never set by default here.
+        VITE_GITHUB_CLIENT_ID: ${VITE_GITHUB_CLIENT_ID:-}
+        VITE_GITLAB_CLIENT_ID: ${VITE_GITLAB_CLIENT_ID:-}
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
+        VITE_APPLE_CLIENT_ID: ${VITE_APPLE_CLIENT_ID:-}
+    command: ["pnpm", "--filter", "@tundra/web", "run", "serve"]
+    container_name: tundra-web
+    restart: unless-stopped
+    # Static assets served by Node (apps/web/server.ts) on container port 8080.
+    ports:
+      - "5173:8080"
+    depends_on:
+      - api
+
+# Named volumes keep datastore state out of the repo tree (see .gitignore).
+volumes:
+  pgdata:
+  redisdata:

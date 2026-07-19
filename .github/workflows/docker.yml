@@ -1,0 +1,80 @@
+name: Docker
+
+# Builds the single app image (ADR-0016) for every push and pull request and
+# publishes it to GHCR from main (ADR-0017): Actions' GITHUB_TOKEN can push
+# because this repository has Write access on the
+# ghcr.io/no-human-tech/tundra/engine package.
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+concurrency:
+  group: docker-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  # The public engine image. (ghcr.io/no-human-tech/tundra/app belongs to the
+  # private tundra-pro repository and is never pushed from here.)
+  IMAGE: ghcr.io/no-human-tech/tundra/engine
+  # VITE_* are baked into the frontend bundle at image build time. Neutral
+  # self-hosting defaults: a relative /graphql endpoint (the API is same-site
+  # with the frontend), no OAuth client ids, no OIDC SSO button — self-hosters
+  # bake their own values into their own builds.
+  WEB_VITE_API_URL: /graphql
+  WEB_VITE_GITHUB_CLIENT_ID: ""
+  WEB_VITE_OIDC_ENABLED: "false"
+
+jobs:
+  image:
+    name: build · push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Fork PRs run with a read-only GITHUB_TOKEN, so only login when the
+      # run can actually push (push events on main).
+      - name: Login to GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Compute image tags
+        id: tags
+        run: echo "short-sha=$(echo '${{ github.sha }}' | cut -c1-12)" >> "$GITHUB_OUTPUT"
+
+      # PRs only build (push: false) — that still validates Dockerfile.app,
+      # the Vite production build and both tsc gates inside the image.
+      - name: Build (and push from main)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: infra/docker/Dockerfile.app
+          push: ${{ github.event_name == 'push' }}
+          # Single image manifest per release: no provenance attestation and
+          # no OCI index, so the package Versions view shows one entry.
+          provenance: false
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:sha-${{ steps.tags.outputs.short-sha }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+          build-args: |
+            VITE_API_URL=${{ env.WEB_VITE_API_URL }}
+            VITE_GITHUB_CLIENT_ID=${{ env.WEB_VITE_GITHUB_CLIENT_ID }}
+            VITE_OIDC_ENABLED=${{ env.WEB_VITE_OIDC_ENABLED }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

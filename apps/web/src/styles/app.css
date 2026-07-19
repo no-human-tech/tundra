@@ -1,0 +1,1325 @@
+/**
+ * App-level layout CSS for apps/web.
+ *
+ * The design system (@tundra/ui) ships every COMPONENT style. This file only
+ * adds page-level scaffolding the global screens need (grids, the welcome hero,
+ * dashboard/board/timesheet layouts, filter bars) — all built on the same
+ * `--tnd-*` tokens, no hard-coded colors except a couple of decorative tints.
+ */
+
+/* ============================================================ Page header */
+.tnd-pagehead {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: var(--tnd-space-4);
+	margin-bottom: var(--tnd-space-5);
+}
+.tnd-pagehead__text {
+	min-width: 0;
+}
+.tnd-pagehead__kicker {
+	margin-bottom: var(--tnd-space-2);
+}
+.tnd-pagehead__lead {
+	margin-bottom: 0;
+	max-width: 70ch;
+}
+.tnd-pagehead__actions {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	flex: none;
+}
+
+/* ============================================================ Section block */
+.tnd-section {
+	margin-bottom: var(--tnd-space-6);
+}
+.tnd-section__head {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: var(--tnd-space-3);
+	margin-bottom: var(--tnd-space-3);
+}
+.tnd-section__title {
+	font-size: var(--tnd-text-lg);
+	font-weight: var(--tnd-weight-bold);
+	letter-spacing: var(--tnd-tracking-tight);
+	color: var(--tnd-color-text);
+}
+.tnd-section__hint {
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text-subtle);
+}
+
+/* Generic responsive auto-grid for cards. */
+.tnd-grid {
+	display: grid;
+	gap: var(--tnd-space-4);
+}
+.tnd-grid--metrics {
+	grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+.tnd-grid--cards {
+	grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+}
+.tnd-grid--two {
+	grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+}
+.tnd-grid--modules {
+	grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+}
+
+/* Dashed "create new project" tile — the last cell of the /projects grid. */
+.tnd-projects__newtile {
+	min-height: 11.375rem;
+	background: var(--tnd-color-surface-2);
+	border: var(--tnd-border-control) dashed var(--tnd-color-border-strong);
+	border-radius: var(--tnd-radius-lg);
+	padding: var(--tnd-space-4);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: var(--tnd-space-2);
+	color: var(--tnd-color-accent);
+	cursor: pointer;
+	transition:
+		border-color var(--tnd-motion-fast) var(--tnd-ease-standard),
+		background-color var(--tnd-motion-fast) var(--tnd-ease-standard);
+}
+.tnd-projects__newtile:hover {
+	border-color: var(--tnd-color-brand-bright);
+}
+.tnd-projects__newtile-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.625rem;
+	height: 2.625rem;
+	border-radius: var(--tnd-radius-md);
+	background: var(--tnd-color-brand-soft);
+	color: var(--tnd-color-accent);
+}
+.tnd-projects__newtile-title {
+	font-size: var(--tnd-text-md);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+}
+.tnd-projects__newtile-hint {
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text-muted);
+	text-align: center;
+}
+
+/* Two-column dashboard split (main + rail). */
+.tnd-split {
+	display: grid;
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+	gap: var(--tnd-space-5);
+	align-items: start;
+}
+@media (max-width: 64rem) {
+	.tnd-split {
+		grid-template-columns: 1fr;
+	}
+}
+/* Dashboard main/rail split is 1.6fr/1fr (wider main column than the generic
+   2fr/1fr split used elsewhere, e.g. Workspace Settings). */
+.tnd-split--dashboard {
+	grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+}
+/* Re-assert the single-column collapse below the tablet breakpoint: this
+   modifier has the same specificity as the unmedia-querried `.tnd-split`
+   rule above and would otherwise win on source order alone, even under the
+   64rem breakpoint. */
+@media (max-width: 64rem) {
+	.tnd-split--dashboard {
+		grid-template-columns: 1fr;
+	}
+}
+
+/* ============================================================ Metric card */
+.tnd-metriccard {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-2);
+}
+.tnd-metriccard__top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--tnd-space-3);
+}
+.tnd-metriccard__icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.25rem;
+	height: 2.25rem;
+	border-radius: var(--tnd-radius-md);
+	background: var(--tnd-color-brand-soft);
+	color: var(--tnd-color-brand);
+	flex: none;
+}
+.tnd-metriccard__value {
+	font-size: var(--tnd-text-3xl);
+	font-weight: var(--tnd-weight-display);
+	letter-spacing: var(--tnd-tracking-tighter);
+	line-height: 1;
+	color: var(--tnd-color-text);
+}
+.tnd-metriccard__label {
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text-muted);
+	font-weight: var(--tnd-weight-medium);
+}
+.tnd-metriccard__sub {
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-delta {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-success-on-soft);
+}
+.tnd-delta--accent {
+	color: var(--tnd-color-accent-ink);
+}
+
+/* ============================================================ Welcome hero */
+.tnd-welcome {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	background:
+		radial-gradient(120% 80% at 80% -10%, var(--tnd-color-mint-100) 0%, transparent 55%),
+		var(--tnd-color-bg);
+}
+.tnd-welcome__bar {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	padding: var(--tnd-space-5) var(--tnd-space-6);
+}
+.tnd-welcome__wordmark {
+	font-size: var(--tnd-text-xl);
+	font-weight: var(--tnd-weight-display);
+	letter-spacing: var(--tnd-tracking-tight);
+	color: var(--tnd-color-text);
+}
+.tnd-welcome__main {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--tnd-space-6);
+}
+.tnd-welcome__inner {
+	max-width: 44rem;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--tnd-space-4);
+}
+.tnd-welcome__title {
+	font-size: clamp(2rem, 5vw, 3.25rem);
+	font-weight: var(--tnd-weight-display);
+	letter-spacing: var(--tnd-tracking-tighter);
+	line-height: 1.05;
+	color: var(--tnd-color-text);
+}
+.tnd-welcome__accent {
+	color: var(--tnd-color-brand);
+}
+.tnd-welcome__lead {
+	font-size: var(--tnd-text-lg);
+	line-height: 1.6;
+	color: var(--tnd-color-text-muted);
+	max-width: 36rem;
+}
+.tnd-welcome__cta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--tnd-space-3);
+	justify-content: center;
+	margin-top: var(--tnd-space-2);
+}
+.tnd-welcome__points {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--tnd-space-2);
+	justify-content: center;
+	margin-top: var(--tnd-space-3);
+}
+
+/* ============================================================ Filter bar */
+.tnd-filterbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	margin-bottom: var(--tnd-space-4);
+}
+.tnd-filter {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	background: var(--tnd-color-surface);
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border-strong);
+	border-radius: var(--tnd-radius-md);
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text-muted);
+	cursor: pointer;
+	white-space: nowrap;
+	transition: border-color var(--tnd-motion-fast) var(--tnd-ease-standard);
+}
+.tnd-filter:hover {
+	border-color: var(--tnd-color-brand-bright);
+}
+.tnd-filter__label {
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-filter__value {
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+}
+.tnd-filter--pinned {
+	border-color: var(--tnd-color-brand);
+	background: var(--tnd-color-brand-soft);
+	color: var(--tnd-color-mint-600);
+}
+
+/* ============================================================ My Tasks queue */
+.tnd-queue-metrics {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--tnd-space-5);
+	padding: var(--tnd-space-4) var(--tnd-space-5);
+	margin-bottom: var(--tnd-space-4);
+}
+.tnd-queue-group {
+	margin-bottom: var(--tnd-space-5);
+}
+.tnd-queue-group__head {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	margin-bottom: var(--tnd-space-2);
+}
+.tnd-queue-group__dot {
+	width: 9px;
+	height: 9px;
+	border-radius: var(--tnd-radius-pill);
+	flex: none;
+}
+.tnd-queue-group__name {
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-bold);
+	color: var(--tnd-color-text);
+}
+.tnd-queue-group__count {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-queue-group__hint {
+	margin-left: auto;
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+}
+
+/* ============================================================ Board */
+.tnd-board {
+	display: flex;
+	gap: var(--tnd-space-4);
+	overflow-x: auto;
+	padding-bottom: var(--tnd-space-3);
+	align-items: flex-start;
+}
+
+/* ============================================================ Timesheet */
+.tnd-timesheet {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--tnd-text-sm);
+}
+.tnd-timesheet th,
+.tnd-timesheet td {
+	padding: var(--tnd-space-3);
+	text-align: right;
+	border-bottom: var(--tnd-border-hairline) solid var(--tnd-color-border);
+}
+.tnd-timesheet th:first-child,
+.tnd-timesheet td:first-child {
+	text-align: left;
+}
+.tnd-timesheet thead th {
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text-subtle);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+.tnd-timesheet tbody td {
+	font-family: var(--tnd-font-mono);
+	color: var(--tnd-color-text);
+}
+.tnd-timesheet td.tnd-timesheet__task {
+	font-family: var(--tnd-font-sans);
+	font-weight: var(--tnd-weight-medium);
+}
+.tnd-timesheet td.tnd-timesheet__empty {
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-timesheet tfoot td {
+	font-family: var(--tnd-font-mono);
+	font-weight: var(--tnd-weight-bold);
+	color: var(--tnd-color-brand);
+	border-bottom: none;
+}
+
+/* Horizontal-scroll wrapper for wide tables (timesheet, team report) —
+   The design spec §4/§7.10: on mobile, wide tables scroll horizontally
+   instead of squishing their columns. */
+.tnd-table-scroll {
+	overflow-x: auto;
+}
+@media (max-width: 42.5rem) {
+	.tnd-table-scroll .tnd-timesheet,
+	.tnd-table-scroll .tnd-teamreport {
+		min-width: 640px;
+	}
+}
+
+/* ============================================================ Team report */
+.tnd-teamreport {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: var(--tnd-text-sm);
+}
+.tnd-teamreport th,
+.tnd-teamreport td {
+	padding: var(--tnd-space-3);
+	text-align: right;
+	border-bottom: var(--tnd-border-hairline) solid var(--tnd-color-border);
+}
+.tnd-teamreport th:first-child,
+.tnd-teamreport td:first-child {
+	text-align: left;
+}
+.tnd-teamreport thead th {
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text-subtle);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+.tnd-teamreport td.tnd-teamreport__person {
+	font-family: var(--tnd-font-sans);
+	font-weight: var(--tnd-weight-medium);
+}
+.tnd-teamreport tbody td:not(.tnd-teamreport__person) {
+	font-family: var(--tnd-font-mono);
+	color: var(--tnd-color-text);
+}
+
+/* ============================================================ Docs */
+.tnd-doc-layout {
+	display: grid;
+	grid-template-columns: 16rem minmax(0, 1fr);
+	gap: var(--tnd-space-5);
+	align-items: start;
+}
+@media (max-width: 64rem) {
+	.tnd-doc-layout {
+		grid-template-columns: 1fr;
+	}
+}
+.tnd-doc-tree {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+.tnd-doc-tree__item {
+	display: block;
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	border-radius: var(--tnd-radius-sm);
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text-muted);
+}
+.tnd-doc-tree__item[aria-current="true"] {
+	background: var(--tnd-color-brand-soft);
+	color: var(--tnd-color-mint-600);
+	font-weight: var(--tnd-weight-semibold);
+}
+.tnd-doc-prose > * + * {
+	margin-top: var(--tnd-space-3);
+}
+.tnd-doc-prose h2 {
+	font-size: var(--tnd-text-lg);
+	font-weight: var(--tnd-weight-bold);
+	color: var(--tnd-color-text);
+	margin-top: var(--tnd-space-5);
+}
+.tnd-doc-prose p {
+	color: var(--tnd-color-text-muted);
+	line-height: 1.7;
+}
+.tnd-doc-prose ul {
+	padding-left: var(--tnd-space-5);
+	list-style: disc;
+	color: var(--tnd-color-text-muted);
+	line-height: 1.7;
+}
+
+/* ============================================================ Misc layout */
+.tnd-stack {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-3);
+}
+.tnd-row {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	flex-wrap: wrap;
+}
+.tnd-row--between {
+	justify-content: space-between;
+}
+.tnd-muted {
+	color: var(--tnd-color-text-muted);
+}
+.tnd-subtle {
+	color: var(--tnd-color-text-subtle);
+	font-size: var(--tnd-text-sm);
+}
+.tnd-list-reset {
+	list-style: none;
+}
+.tnd-meterbar {
+	height: 6px;
+	border-radius: var(--tnd-radius-pill);
+	background: var(--tnd-color-surface-sunken);
+	overflow: hidden;
+}
+.tnd-meterbar__fill {
+	height: 100%;
+	border-radius: var(--tnd-radius-pill);
+	background: var(--tnd-color-brand-bright);
+}
+
+/* Activity / item rows inside cards. */
+.tnd-itemrow {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	padding: var(--tnd-space-3) 0;
+	border-bottom: var(--tnd-border-hairline) solid var(--tnd-color-border);
+}
+.tnd-itemrow:last-child {
+	border-bottom: none;
+}
+.tnd-itemrow__main {
+	min-width: 0;
+	flex: 1;
+}
+.tnd-itemrow__title {
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+}
+.tnd-itemrow__meta {
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+}
+
+/* Dashboard "Active projects" row — a project key badge, name/meta, and a
+   fixed-width progress bar + percent (distinct from the generic .tnd-itemrow
+   layout, which has no trailing progress column). */
+.tnd-dashproj__key {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2.125rem;
+	height: 2.125rem;
+	flex: none;
+	border-radius: var(--tnd-radius-md);
+	font-family: var(--tnd-font-mono);
+	font-weight: var(--tnd-weight-bold);
+	font-size: var(--tnd-text-xs);
+}
+.tnd-dashproj__progress {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	width: 10rem;
+	flex: none;
+}
+.tnd-dashproj__progress .tnd-meterbar {
+	flex: 1;
+}
+.tnd-dashproj__percent {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text-muted);
+	width: 2.25rem;
+	flex: none;
+	text-align: right;
+}
+
+/* Dashboard "Module activity" tile grid — a 3-column grid of small tiles
+   (icon+name, count+unit, thin progress bar), replacing a single full-width
+   list row per module. */
+.tnd-modact-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--tnd-space-3);
+}
+@media (max-width: 40rem) {
+	.tnd-modact-grid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+.tnd-modact-tile {
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border-soft);
+	border-radius: var(--tnd-radius-lg);
+	padding: var(--tnd-space-3);
+}
+.tnd-modact-tile__head {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	margin-bottom: var(--tnd-space-2);
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+}
+.tnd-modact-tile__count {
+	font-size: 1.25rem;
+	font-weight: var(--tnd-weight-display);
+	color: var(--tnd-color-text);
+}
+.tnd-modact-tile__unit {
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-modact-tile__bar {
+	margin-top: var(--tnd-space-2);
+	height: 4px;
+	border-radius: var(--tnd-radius-pill);
+	background: var(--tnd-color-surface-sunken);
+	overflow: hidden;
+}
+.tnd-modact-tile__bar-fill {
+	height: 100%;
+	border-radius: var(--tnd-radius-pill);
+}
+
+/* Dashboard "Time logged this week" bar chart — 7 flex columns, bar + weekday
+   label, height matches the comp's 74px chart area. */
+.tnd-weekbars {
+	display: flex;
+	align-items: flex-end;
+	gap: var(--tnd-space-2);
+	height: 4.625rem;
+	margin-bottom: var(--tnd-space-2);
+}
+.tnd-weekbars__col {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-end;
+	gap: var(--tnd-space-1);
+	height: 100%;
+}
+.tnd-weekbars__bar {
+	width: 100%;
+	min-height: 2px;
+	border-radius: 5px 5px 3px 3px;
+	background: var(--tnd-color-brand-bright);
+}
+.tnd-weekbars__label {
+	font-family: var(--tnd-font-mono);
+	font-size: 0.625rem;
+	color: var(--tnd-color-text-faint);
+}
+
+/* Dashboard "My open tasks" donut legend row. */
+.tnd-donut-legend {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-3);
+	flex: 1;
+}
+.tnd-donut-legend__row {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-2);
+}
+.tnd-donut-legend__dot {
+	width: 0.5625rem;
+	height: 0.5625rem;
+	flex: none;
+	border-radius: var(--tnd-radius-xs);
+}
+.tnd-donut-legend__label {
+	flex: 1;
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+}
+.tnd-donut-legend__count {
+	font-family: var(--tnd-font-mono);
+	font-size: var(--tnd-text-sm);
+	font-weight: var(--tnd-weight-bold);
+}
+
+/* Design-system swatches. */
+.tnd-swatches {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+	gap: var(--tnd-space-3);
+}
+.tnd-swatch {
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border);
+	border-radius: var(--tnd-radius-md);
+	overflow: hidden;
+}
+.tnd-swatch__chip {
+	height: 3.5rem;
+}
+.tnd-swatch__meta {
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+}
+.tnd-swatch__name {
+	font-size: var(--tnd-text-xs);
+	font-weight: var(--tnd-weight-semibold);
+	color: var(--tnd-color-text);
+}
+.tnd-swatch__val {
+	font-family: var(--tnd-font-mono);
+	font-size: 0.625rem;
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-icongrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+	gap: var(--tnd-space-2);
+}
+.tnd-icongrid__cell {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--tnd-space-2);
+	padding: var(--tnd-space-3);
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border);
+	border-radius: var(--tnd-radius-md);
+	color: var(--tnd-color-text-muted);
+}
+.tnd-icongrid__name {
+	font-family: var(--tnd-font-mono);
+	font-size: 0.625rem;
+	color: var(--tnd-color-text-subtle);
+}
+
+/* ================================================================= Auth page */
+.tnd-auth {
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	background:
+		radial-gradient(120% 80% at 80% -10%, var(--tnd-color-mint-100) 0%, transparent 55%),
+		var(--tnd-color-bg);
+}
+.tnd-auth__bar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--tnd-space-3);
+	padding: var(--tnd-space-5) var(--tnd-space-6);
+}
+
+.tnd-auth__bar-brand {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	text-decoration: none;
+	color: inherit;
+}
+
+.tnd-auth__bar-actions {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-4);
+}
+
+.tnd-auth__wordmark {
+	font-size: var(--tnd-text-xl);
+	font-weight: var(--tnd-weight-display);
+	letter-spacing: var(--tnd-tracking-tight);
+	color: var(--tnd-color-text);
+}
+.tnd-auth__main {
+	flex: 1 1 auto;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: var(--tnd-space-6);
+}
+.tnd-auth__card {
+	width: 100%;
+	/* Measured directly off apps/web/e2e/__screenshots__/login-light-1507x1060.png
+	   (the supplied product mockup, which supersedes the narrower 430px value
+	   from the design prototype): outer width 535px, padding-left
+	   ~40px, padding-top ~44px, padding-bottom ~38px. Border color/radius/shadow
+	   unchanged from that file (a hairline `--tnd-color-border-warm`, not the
+	   cooler default border, per its own token comment "auth-card hairlines").
+	   Vertical rhythm between sections now comes from each child's own margin
+	   (see .tnd-auth__title, .tnd-oauth-row, etc.) instead of a uniform flex
+	   `gap`, because the mockup's spacing is NOT uniform between sections. */
+	max-width: 535px;
+	/* The mockup's card sits noticeably below true vertical center of the
+	   viewport (measured card top 283px vs the ~232px pure centering would
+	   give at 1507x1060) — confirmed empirically against the reference PNG.
+	   `.tnd-auth__main` still centers as the baseline (correct on short/mobile
+	   viewports where 50px would otherwise push the card too low), and this
+	   margin nudges it down to match on the reference's own viewport size. */
+	margin-top: 106px;
+	background: var(--tnd-color-surface);
+	border: 1px solid var(--tnd-color-border-warm);
+	border-radius: 20px;
+	box-shadow: 0 18px 50px rgba(16, 48, 43, 0.08);
+	padding: 44px 40px 38px;
+	display: flex;
+	flex-direction: column;
+}
+.tnd-auth__title {
+	font-size: var(--tnd-text-2xl);
+	font-weight: var(--tnd-weight-display);
+	color: var(--tnd-color-text);
+	margin: 0 0 11px;
+}
+.tnd-auth__error {
+	padding: var(--tnd-space-3) var(--tnd-space-4);
+	background: var(--tnd-color-danger-soft);
+	color: var(--tnd-color-danger-ink);
+	border-radius: var(--tnd-radius-md);
+	font-size: var(--tnd-text-sm);
+	margin: 0 0 var(--tnd-space-4);
+}
+.tnd-auth__lead {
+	font-size: var(--tnd-text-sm);
+	color: var(--tnd-color-text-subtle);
+	line-height: 1.6;
+	margin: 0 0 33px;
+}
+.tnd-auth__success {
+	padding: var(--tnd-space-3) var(--tnd-space-4);
+	background: var(--tnd-color-mint-100);
+	color: var(--tnd-color-brand-ink);
+	border-radius: var(--tnd-radius-md);
+	font-size: var(--tnd-text-sm);
+	font-weight: 500;
+}
+.tnd-auth__card--wide {
+	max-width: 30rem;
+}
+
+/* Step indicator (company setup) */
+.tnd-auth__step-indicator {
+	display: flex;
+	align-items: center;
+	gap: 0;
+	margin-bottom: var(--tnd-space-1);
+}
+.tnd-auth__step {
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	border: 2px solid var(--tnd-color-border-strong);
+	background: var(--tnd-color-surface);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	font-weight: 700;
+	color: var(--tnd-color-text-muted);
+	flex-shrink: 0;
+}
+.tnd-auth__step--done {
+	border-color: var(--tnd-color-brand);
+	background: var(--tnd-color-brand);
+	color: #fff;
+}
+.tnd-auth__step--active {
+	border-color: var(--tnd-color-brand);
+	color: var(--tnd-color-brand);
+}
+.tnd-auth__step-line {
+	flex: 1;
+	height: 2px;
+	background: var(--tnd-color-border);
+	max-width: 48px;
+}
+.tnd-auth__step-label {
+	margin-left: var(--tnd-space-3);
+	font-family: var(--tnd-font-mono);
+	font-size: 11px;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	color: var(--tnd-color-text-muted);
+	text-transform: uppercase;
+}
+
+/* URL prefix input group */
+.tnd-field__input-group {
+	display: flex;
+	align-items: stretch;
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border);
+	border-radius: var(--tnd-radius-md);
+	overflow: hidden;
+	background: var(--tnd-color-bg);
+}
+.tnd-field__input-prefix {
+	display: flex;
+	align-items: center;
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	background: var(--tnd-color-surface);
+	border-right: var(--tnd-border-hairline) solid var(--tnd-color-border);
+	font-size: 13px;
+	font-family: var(--tnd-font-mono);
+	color: var(--tnd-color-text-muted);
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+.tnd-field__input--joined {
+	border: none;
+	border-radius: 0;
+	background: transparent;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+.tnd-field__input--joined:focus {
+	box-shadow: none;
+}
+.tnd-field__input-group:focus-within {
+	border-color: var(--tnd-color-brand);
+	box-shadow: 0 0 0 2px var(--tnd-color-brand-soft);
+}
+
+/* Plan picker (company setup) */
+.tnd-plan-picker {
+	gap: var(--tnd-space-2);
+}
+.tnd-plan-picker__options {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: var(--tnd-space-2);
+}
+.tnd-plan-picker__option {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 6px;
+	padding: var(--tnd-space-3);
+	border: 1.5px solid var(--tnd-color-border);
+	border-radius: var(--tnd-radius-md);
+	cursor: pointer;
+	position: relative;
+}
+.tnd-plan-picker__option:hover {
+	border-color: var(--tnd-color-border-strong);
+}
+.tnd-plan-picker__option--selected {
+	border-color: var(--tnd-color-brand);
+	background: var(--tnd-color-mint-100);
+}
+.tnd-plan-picker__radio {
+	position: absolute;
+	opacity: 0;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+.tnd-plan-picker__name {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--tnd-color-text);
+}
+.tnd-plan-picker__badge {
+	font-size: 10px;
+	font-family: var(--tnd-font-mono);
+	font-weight: 600;
+	letter-spacing: 0.3px;
+	color: #ff8a3d;
+	background: #fff1e7;
+	border-radius: 4px;
+	padding: 2px 6px;
+}
+
+/* Company logo upload/placeholder (company setup) */
+.tnd-logo-row {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+}
+.tnd-logo-placeholder {
+	flex: none;
+	width: 52px;
+	height: 52px;
+	border-radius: var(--tnd-radius-md);
+	border: 1.5px dashed var(--tnd-color-border-strong);
+	background: var(--tnd-color-surface-sunken);
+	color: var(--tnd-color-text-subtle);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	overflow: hidden;
+	padding: 0;
+	transition: border-color var(--tnd-motion-fast);
+}
+.tnd-logo-placeholder:hover {
+	border-color: var(--tnd-color-brand);
+	color: var(--tnd-color-brand);
+}
+.tnd-logo-placeholder__img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.tnd-logo-row__fields {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+}
+.tnd-logo-row__upload-link {
+	align-self: flex-start;
+	font-size: 12px;
+}
+
+/* Authentication methods (company setup) — SSO/Kerberos, OAuth providers, email */
+.tnd-authmethods {
+	gap: var(--tnd-space-3);
+	border: 1.5px solid var(--tnd-color-border);
+	border-radius: var(--tnd-radius-md);
+	padding: var(--tnd-space-4);
+}
+.tnd-authmethods__row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--tnd-space-3);
+}
+.tnd-authmethods__row-head {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+}
+.tnd-authmethods__row-title {
+	font-size: 13.5px;
+	font-weight: 600;
+	color: var(--tnd-color-text);
+}
+.tnd-authmethods__row-sub {
+	font-size: 12px;
+	color: var(--tnd-color-text-subtle);
+}
+.tnd-authmethods__reveal {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-3);
+	padding: var(--tnd-space-3);
+	background: var(--tnd-color-surface-sunken);
+	border-radius: var(--tnd-radius-md);
+}
+.tnd-authmethods__divider {
+	height: 1px;
+	border: 0;
+	background: var(--tnd-color-border-soft);
+	margin: 0;
+}
+.tnd-authmethods__fieldset {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-3);
+	border: 0;
+	padding: 0;
+	margin: 0;
+}
+.tnd-oauth-checklist {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: var(--tnd-space-2);
+}
+.tnd-oauth-checklist__option {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	border: 1.5px solid var(--tnd-color-border);
+	border-radius: var(--tnd-radius-md);
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--tnd-color-text);
+	cursor: pointer;
+}
+.tnd-oauth-checklist__option:has(input:checked) {
+	border-color: var(--tnd-color-brand);
+	background: var(--tnd-color-mint-100);
+}
+
+.tnd-auth__form {
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+}
+.tnd-auth__toggle {
+	text-align: center;
+	font-size: 13.5px;
+	color: var(--tnd-color-text-muted);
+	margin: 26px 0 0;
+	padding-top: 26px;
+	border-top: 1px solid var(--tnd-color-border-soft);
+}
+
+/* OAuth provider tiles — icon-only, shown above the divider, one tile per
+   configured provider only (apps/web/src/pages/LoginPage.tsx computes the list). */
+.tnd-oauth-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	justify-content: center;
+	margin: 0 0 32px;
+}
+.tnd-oauth-tile {
+	flex: 1 1 0;
+	min-width: 64px;
+	max-width: 96px;
+	height: 52px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--tnd-color-surface);
+	border: 1.5px solid var(--tnd-color-border);
+	border-radius: 12px;
+	color: var(--tnd-color-text);
+	text-decoration: none;
+	cursor: pointer;
+	transition:
+		border-color 0.15s ease,
+		background 0.15s ease,
+		transform 0.15s ease;
+}
+.tnd-oauth-tile:hover {
+	border-color: var(--tnd-color-brand-bright);
+	background: var(--tnd-color-surface-raised);
+	transform: translateY(-1px);
+}
+
+/* Password label row: label left, "Forgot password?" right, same line. */
+.tnd-field__row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.tnd-field__row .tnd-field__label {
+	margin: 0;
+}
+.tnd-field__forgot {
+	font-size: 12px;
+}
+
+/* Password input with an inline reveal toggle. */
+.tnd-field__password {
+	position: relative;
+}
+.tnd-field__password .tnd-field__input {
+	width: 100%;
+	padding-right: 42px;
+}
+.tnd-field__reveal {
+	position: absolute;
+	right: 6px;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 30px;
+	height: 30px;
+	border: none;
+	background: transparent;
+	color: var(--tnd-color-text-muted);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--tnd-radius-sm);
+}
+.tnd-field__reveal:hover {
+	color: var(--tnd-color-brand);
+}
+
+/* ================================================================ GitHub button */
+.tnd-auth__divider {
+	display: flex;
+	align-items: center;
+	gap: var(--tnd-space-3);
+	color: var(--tnd-color-text-subtle);
+	font-size: 11.5px;
+	font-family: var(--tnd-font-mono);
+	margin: 0 0 32px;
+}
+.tnd-auth__divider::before,
+.tnd-auth__divider::after {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: var(--tnd-color-border-soft);
+}
+
+/* ================================================================ Form fields */
+.tnd-field {
+	display: flex;
+	flex-direction: column;
+	gap: var(--tnd-space-1);
+}
+.tnd-field__label {
+	font-size: var(--tnd-text-sm);
+	font-weight: 600;
+	color: var(--tnd-color-text);
+}
+.tnd-field__input {
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border);
+	border-radius: var(--tnd-radius-md);
+	background: var(--tnd-color-bg);
+	color: var(--tnd-color-text);
+	font-size: var(--tnd-text-md);
+	font-family: inherit;
+	outline: none;
+	transition: border-color 0.15s;
+}
+.tnd-field__input:focus {
+	border-color: var(--tnd-color-brand);
+	box-shadow: 0 0 0 2px var(--tnd-color-brand-soft);
+}
+.tnd-field__error {
+	font-size: var(--tnd-text-xs);
+	color: var(--tnd-color-danger-ink);
+}
+
+/* ======================================================= Link button variant */
+.tnd-link {
+	background: none;
+	border: none;
+	padding: 0;
+	color: var(--tnd-color-brand-ink);
+	font-size: inherit;
+	cursor: pointer;
+	text-decoration: underline;
+}
+.tnd-link:hover {
+	color: var(--tnd-color-brand);
+}
+
+/* ============================================================== Select input */
+.tnd-select {
+	padding: var(--tnd-space-1) var(--tnd-space-2);
+	border: var(--tnd-border-hairline) solid var(--tnd-color-border);
+	border-radius: var(--tnd-radius-sm);
+	background: var(--tnd-color-bg);
+	color: var(--tnd-color-text);
+	font-size: var(--tnd-text-sm);
+	font-family: inherit;
+	cursor: pointer;
+}
+.tnd-select:disabled {
+	opacity: 0.5;
+	cursor: default;
+}
+
+/* ===================================================== Language switcher */
+/* Native <select> (Topbar + auth header, apps/web/src/components/
+   LanguageSwitcher.tsx). Native select chrome can't be restyled directly
+   (esp. its background, which defaults to a grey/OS-themed control on most
+   platforms), so it's suppressed with appearance:none and rebuilt from
+   tokens — same technique as the canonical prototype's selects
+   (design prototype: appearance:none + border-strong +
+   surface bg + ink text + an absolutely-positioned chevron drawn on top,
+   since the native arrow disappears with appearance:none). Sized/bordered
+   to match the adjacent ThemeToggle (.tnd-iconbutton--theme: 38px, 9px
+   radius, 1.5px border-strong). */
+.tnd-langswitcher-wrap {
+	position: relative;
+	display: inline-flex;
+}
+
+.tnd-langswitcher {
+	appearance: none;
+	-webkit-appearance: none;
+	height: 2.375rem;
+	padding: 0 1.75rem 0 0.75rem;
+	border: var(--tnd-border-control) solid var(--tnd-color-border-strong);
+	border-radius: 9px;
+	background-color: var(--tnd-color-surface);
+	color: var(--tnd-color-text);
+	font-family: inherit;
+	font-size: var(--tnd-text-sm);
+	cursor: pointer;
+	outline: none;
+	/* Lets the browser render the native <option> popup (and any other native
+	   form-control chrome) in the matching scheme instead of always-light. */
+	color-scheme: light;
+}
+:root[data-theme="dark"] .tnd-langswitcher {
+	color-scheme: dark;
+}
+.tnd-langswitcher:hover {
+	border-color: var(--tnd-color-brand-bright);
+}
+.tnd-langswitcher:focus-visible {
+	border-color: var(--tnd-color-mint-400);
+}
+.tnd-langswitcher-chevron {
+	position: absolute;
+	right: 0.65rem;
+	top: 50%;
+	transform: translateY(-50%);
+	color: var(--tnd-color-text-subtle);
+	pointer-events: none;
+}
+
+/* ================================================== Drawer tab strip */
+.tnd-tab {
+	padding: var(--tnd-space-2) var(--tnd-space-3);
+	background: none;
+	border: none;
+	border-bottom: 2px solid transparent;
+	font-size: var(--tnd-text-sm);
+	font-weight: 600;
+	color: var(--tnd-color-text-muted);
+	cursor: pointer;
+	transition:
+		color 0.15s,
+		border-color 0.15s;
+	white-space: nowrap;
+}
+.tnd-tab:hover {
+	color: var(--tnd-color-text);
+}
+.tnd-tab--active {
+	color: var(--tnd-color-brand-ink);
+	border-bottom-color: var(--tnd-color-brand);
+}

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Tundra">
+  <rect width="64" height="64" rx="16" fill="#0F766E" />
+  <rect x="16" y="18" width="20" height="7" rx="3.5" fill="#FF8A3D" />
+  <rect x="16" y="29" width="32" height="7" rx="3.5" fill="#7CEAC4" />
+  <rect x="16" y="40" width="26" height="7" rx="3.5" fill="#CFF4E6" />
+</svg>

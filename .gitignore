@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+.turbo/
+
+# Test / coverage
+coverage/
+
+# Playwright e2e artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+.playwright/
+.playwright-mcp/
+blob-report/
+
+# Pixel-perfect audit harness output (apps/web/e2e/pixel-audit.spec.ts)
+artifacts/
+
+# Environment files (keep .env.example tracked)
+.env
+.env.*
+!.env.example
+
+# Local database files
+*.sqlite
+*.sqlite3
+*.db
+pgdata/
+# Anchored to repo root: an unanchored `data/` also matched
+# apps/web/src/data/ (real frontend fixture source, not local DB state).
+/data/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code local/private files
+.claude/settings.local.json
+.claude/*.local.json
+
+# Codex logs
+.codex/
+codex-logs/
+*.codex.log

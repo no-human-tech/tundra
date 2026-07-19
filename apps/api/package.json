@@ -1,0 +1,30 @@
+{
+	"name": "@tundra/api",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch src/index.ts",
+		"start": "tsx src/index.ts",
+		"migrate": "tsx src/migrate.ts",
+		"build": "tsc --noEmit",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run --passWithNoTests",
+		"clean": "rimraf dist .turbo"
+	},
+	"dependencies": {
+		"@hono/node-server": "^1.13.7",
+		"@tundra/config": "workspace:*",
+		"@tundra/db": "workspace:*",
+		"@tundra/domain": "workspace:*",
+		"@tundra/modules-sdk": "workspace:*",
+		"graphql": "^16.10.0",
+		"graphql-yoga": "^5.10.6",
+		"hono": "^4.6.15",
+		"ioredis": "^5.4.2",
+		"openid-client": "^6.8.4"
+	},
+	"devDependencies": {
+		"vitest": "^2.1.8"
+	}
+}

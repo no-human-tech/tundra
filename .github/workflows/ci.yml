@@ -1,0 +1,59 @@
+name: CI
+
+# Runs the full quality gate on every push and pull request.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: format · lint · typecheck · test · build
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ["20", "22"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Enable Corepack BEFORE setup-node so its `cache: pnpm` can locate pnpm
+      # (the version is pinned by package.json "packageManager").
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: corepack pnpm install --frozen-lockfile
+
+      # Separate steps so a failing gate is immediately legible in the run log.
+      - name: Format check
+        run: corepack pnpm run format:check
+
+      - name: Lint
+        run: corepack pnpm run lint
+
+      - name: Typecheck
+        run: corepack pnpm run typecheck
+
+      - name: Test
+        run: corepack pnpm run test
+
+      - name: Build
+        run: corepack pnpm run build
